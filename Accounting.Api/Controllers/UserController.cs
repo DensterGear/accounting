@@ -31,6 +31,8 @@ public class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public UserViewModel Get(string id)
     {
+        ArgumentNullException.ThrowIfNull(id);
+        
         var user = UserService.GetById(id);
         return _mapper.Map<UserViewModel>(user);
     }
@@ -40,6 +42,8 @@ public class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public UserViewModel Post(UserViewModel userViewModel)
     {
+        ArgumentNullException.ThrowIfNull(userViewModel);
+        
         var user = _mapper.Map<Domain.User>(userViewModel);
         var createdUser = UserService.Create(user);
         return _mapper.Map<UserViewModel>(createdUser);
@@ -50,6 +54,9 @@ public class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public UserViewModel Put(string id, UserViewModel userViewModel)
     {
+        ArgumentNullException.ThrowIfNull(id);
+        ArgumentNullException.ThrowIfNull(userViewModel);
+        
         var user = _mapper.Map<Domain.User>(userViewModel);
         var createdUser = UserService.Update(id, user);
         return _mapper.Map<UserViewModel>(createdUser);
@@ -60,6 +67,8 @@ public class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public IActionResult Delete(string id)
     {
+        ArgumentNullException.ThrowIfNull(id);
+        
         UserService.Delete(id);
         return Ok();
     }
