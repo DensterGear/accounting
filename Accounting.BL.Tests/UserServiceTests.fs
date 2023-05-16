@@ -34,8 +34,8 @@ type UserServiceTests() =
         let user1 = { getTestUser with Id = BsonObjectId(ObjectId.GenerateNewId()) } 
         let user2 = { user1 with Id = BsonObjectId(ObjectId.GenerateNewId()); Email = "john1@example.com" } 
 
-        UserService.create user1
-        UserService.create user2
+        UserService.create user1 |> ignore
+        UserService.create user2 |> ignore
 
         //Act
         let result = UserService.getAll ()
@@ -51,7 +51,7 @@ type UserServiceTests() =
     member this.``Get by id should return specific user``() =
         //Arrange
         let user = { getTestUser with Id = BsonObjectId(ObjectId.GenerateNewId()) }
-        UserService.create user
+        UserService.create user |> ignore
         
         //Act
         let actualUser = userRepository.getById user.Id
@@ -67,7 +67,7 @@ type UserServiceTests() =
         //Arrange
         let user = { getTestUser with Id = BsonObjectId(ObjectId.GenerateNewId()) }
         
-        UserService.create user
+        UserService.create user |> ignore
         
         let changedUser = { user with City = "Prague" }
         
@@ -85,10 +85,10 @@ type UserServiceTests() =
         //Arrange
         let user = { getTestUser with Id = BsonObjectId(ObjectId.GenerateNewId()) }
         
-        UserService.create user
+        UserService.create user |> ignore
 
         //Assert
-        Assert.ThrowsException<ValidationError>(fun () -> UserService.create { user with Id = BsonObjectId(ObjectId.GenerateNewId()) }) |> ignore
+        Assert.ThrowsException<ValidationError>(fun () -> UserService.create { user with Id = BsonObjectId(ObjectId.GenerateNewId()) } |> ignore) |> ignore
         
         //Teardown
         userRepository.delete(user.Id) |> ignore

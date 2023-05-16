@@ -10,12 +10,10 @@ namespace Accounting.Api.Controllers;
 [Route("[controller]")]
 public class UserController : ControllerBase
 {
-    private readonly ILogger<UserController> _logger;
     private readonly IMapper _mapper;
 
-    public UserController(ILogger<UserController> logger, IMapper mapper)
+    public UserController(IMapper mapper)
     {
-        _logger = logger;
         _mapper = mapper;
     }
     
@@ -24,7 +22,7 @@ public class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public IEnumerable<UserViewModel> GetAll()
     {
-        var users = UserService.getAll();
+        var users = UserService.GetAll();
         return users.Select(user => _mapper.Map<UserViewModel>(user));
     }
     
@@ -33,7 +31,7 @@ public class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public UserViewModel Get(string id)
     {
-        var user = UserService.getGetById(id);
+        var user = UserService.GetById(id);
         return _mapper.Map<UserViewModel>(user);
     }
     
@@ -43,7 +41,7 @@ public class UserController : ControllerBase
     public UserViewModel Post(UserViewModel userViewModel)
     {
         var user = _mapper.Map<Domain.User>(userViewModel);
-        var createdUser = UserService.create(user);
+        var createdUser = UserService.Create(user);
         return _mapper.Map<UserViewModel>(createdUser);
     }
     
@@ -53,7 +51,7 @@ public class UserController : ControllerBase
     public UserViewModel Put(string id, UserViewModel userViewModel)
     {
         var user = _mapper.Map<Domain.User>(userViewModel);
-        var createdUser = UserService.update(id, user);
+        var createdUser = UserService.Update(id, user);
         return _mapper.Map<UserViewModel>(createdUser);
     }
     
@@ -62,7 +60,7 @@ public class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public IActionResult Delete(string id)
     {
-        UserService.delete(id);
+        UserService.Delete(id);
         return Ok();
     }
 }
