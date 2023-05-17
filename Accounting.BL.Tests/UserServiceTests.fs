@@ -1,5 +1,6 @@
 ﻿namespace Accounting.BL.Tests
 
+open System
 open Accounting.BL
 open Accounting.BL.Domain
 open Accounting.BL.UserService
@@ -15,7 +16,9 @@ module UserServiceTestsOperation =
               Email = "john@example.com"
               Age = 25<age>
               Gender = Gender.Male
-              City = "New York" }
+              City = "New York"
+              CreatedAt = DateTime.UtcNow
+              UpdatedAt = DateTime.UtcNow }
 
 [<TestClass>]
 type UserServiceTests() =

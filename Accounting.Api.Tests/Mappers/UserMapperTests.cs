@@ -62,7 +62,7 @@ public class UserMapperTests
     public void UserBl_MapToViewModel_ShouldMapAllFields()
     {
         //Arrange
-        var user = new Domain.User(new BsonObjectId(ObjectId.GenerateNewId()), Name, FSharpOption<string>.None, Email, Age, Domain.Gender.Female, City);
+        var user = new Domain.User(new BsonObjectId(ObjectId.GenerateNewId()), Name, FSharpOption<string>.None, Email, Age, Domain.Gender.Female, City, DateTime.UtcNow, DateTime.UtcNow);
         
         //Act
         var actualViewModelUser = _mapper.Map<Domain.User, UserViewModel>(user);

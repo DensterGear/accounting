@@ -1,5 +1,6 @@
 ﻿module Accounting.BL.Domain
 
+open System
 open Microsoft.FSharp.Core
 open MongoDB.Bson
 
@@ -34,4 +35,6 @@ type User =
       Email: string
       Age: int<age>
       Gender: Gender
-      City: string }
+      City: string
+      CreatedAt: DateTime
+      UpdatedAt: DateTime }

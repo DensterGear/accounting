@@ -17,11 +17,11 @@ module Validation =
     let existingByEmail email =
         let exists = checkUserByEmail email
         match exists with
-        | false -> raise (ValidationError $"User with {email} already exists")
+        | false -> raise (ValidationError $"User with email {email} already exists")
         | _ -> ()
         
     let existingById id =
         let exists = checkUserById id
         match exists with
         | true -> ()
-        | _ -> raise (ValidationError $"User with {id} not existing")
+        | _ -> raise (ValidationError $"User with id {id} not existing")
