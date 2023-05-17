@@ -25,11 +25,11 @@ type UserServiceTests() =
     
     [<TestInitialize>]
     member this.TestInit() =
-        userRepository.deleteAll() |> ignore
+        userRepository.deleteAllAsync() |> ignore
         
     [<TestCleanup>]
     member this.TestTeardown() =
-        userRepository.deleteAll() |> ignore
+        userRepository.deleteAllAsync() |> ignore
 
     [<TestMethod>]
     member this.``GetAll should return all users``() =
@@ -47,8 +47,8 @@ type UserServiceTests() =
         Assert.IsTrue ((Seq.length result) = 2)
         
         //Teardown
-        userRepository.delete(user1.Id) |> ignore
-        userRepository.delete(user2.Id) |> ignore
+        UserService.delete(user1.Id.ToString())
+        UserService.delete(user2.Id.ToString())
 
     [<TestMethod>]
     member this.``Get by id should return specific user``() =
@@ -57,13 +57,13 @@ type UserServiceTests() =
         UserService.create user |> ignore
         
         //Act
-        let actualUser = userRepository.getById user.Id
+        let actualUser = UserService.getById(user.Id.ToString())
         
         //Assert
         Assert.AreEqual(user.Id, actualUser.Id)
         
         //Teardown
-        userRepository.delete(user.Id) |> ignore
+        userRepository.deleteAsync(user.Id) |> ignore
     
     [<TestMethod>]
     member this.``Update user should return specific user with the changes``() =
@@ -75,13 +75,13 @@ type UserServiceTests() =
         let changedUser = { user with City = "Prague" }
         
         //Act
-        let actualUser = userRepository.update(user.Id, changedUser)
-        
+        let actualUser = UserService.update(user.Id.ToString(), changedUser)
+
         //Assert
         Assert.AreEqual(changedUser.City, actualUser.City)
         
         //Teardown
-        userRepository.delete(user.Id) |> ignore
+        userRepository.deleteAsync(user.Id) |> ignore
 
     [<TestMethod>]
     member this.``Create already existed user should return error``() =
@@ -94,4 +94,4 @@ type UserServiceTests() =
         Assert.ThrowsException<ValidationError>(fun () -> UserService.create { user with Id = BsonObjectId(ObjectId.GenerateNewId()) } |> ignore) |> ignore
         
         //Teardown
-        userRepository.delete(user.Id) |> ignore
+        userRepository.deleteAsync(user.Id) |> ignore

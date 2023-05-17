@@ -14,31 +14,47 @@ module UserService =
     
     [<CompiledName("GetAll")>]
     let getAll(): User seq =
-        userRepository.getAll()
-        |> Seq.sortByDescending(fun u -> u.CreatedAt)
+        async {
+            let! users = userRepository.getAllAsync() |> Async.AwaitTask
+            return users |> Seq.sortByDescending(fun x -> x.CreatedAt)
+        } |> Async.RunSynchronously
     
     [<CompiledName("GetById")>]
     let getById(id: string) =
         let userId = toObjectId id
         Validation.existingById userId
-        userRepository.getById userId
+        async {
+            let! user = userRepository.getByIdAsync(userId) |> Async.AwaitTask
+            return user
+        } |> Async.RunSynchronously
+        
     
     [<CompiledName("Create")>]
     let create(user: User) =
         Validation.existingByEmail user.Email
         let user = { user with CreatedAt = DateTime.UtcNow; UpdatedAt = DateTime.UtcNow }
-        userRepository.create user
-        userRepository.getByEmail user.Email
+        async {
+            userRepository.createAsync user |> Async.AwaitTask |> ignore
+            let! user = userRepository.getByEmailAsync user.Email |> Async.AwaitTask
+            return user
+        } |> Async.RunSynchronously
     
     [<CompiledName("Update")>]
     let update(id: string, user: User) =
         let userId = toObjectId id
         Validation.existingById userId
         let user = { user with UpdatedAt = DateTime.UtcNow }
-        userRepository.update (userId, user)
+        async {
+            let! userUpdate = userRepository.updateAsync (userId, user) |> Async.AwaitTask
+            return userUpdate
+        } |> Async.RunSynchronously
+        
         
     [<CompiledName("Delete")>]
     let delete(id: string) =
         let userId = toObjectId id
-        Validation.existingById userId 
-        userRepository.delete userId
+        Validation.existingById userId
+        async {
+            userRepository.deleteAsync userId |> Async.AwaitTask |> ignore
+        } |> Async.RunSynchronously
+        

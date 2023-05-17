@@ -7,11 +7,17 @@ module Validation =
     let userRepository = Repository<User>(userDbCollection)
     
     let checkUserByEmail email =
-        let user = userRepository.getByEmail email
+        let user = async {
+                        let! user = userRepository.getByEmailAsync(email) |> Async.AwaitTask
+                        return user
+                    } |> Async.RunSynchronously
         box user = null
 
     let checkUserById id =
-        let user = userRepository.getById id
+        let user = async {
+                        let! user = userRepository.getByIdAsync(id) |> Async.AwaitTask
+                        return user
+                    } |> Async.RunSynchronously
         not(box user = null)
 
     let existingByEmail email =

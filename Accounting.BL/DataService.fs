@@ -30,26 +30,27 @@ type Repository<'T>(collectionName: string) =
     let config = loadConfiguration()
     let client = MongoClient(config.GetSection("Database:ConnectionString").Value)
     let collection = client.GetDatabase(config.GetSection("Database:DatabaseName").Value).GetCollection<'T>(collectionName)
-    member this.getAll() = collection.AsQueryable().ToEnumerable()
+    
+    member this.getAllAsync() = collection.AsQueryable().ToListAsync()
 
-    member this.    getById(id: BsonObjectId) =
-        collection.Find(equalIdFilter id).SingleOrDefault()
-
-    member this.getByEmail(email: string) =
-        let filter = Builders<'T>.Filter.Eq("Email", email)
-        collection.Find(filter).SingleOrDefault()
-
-    member this.create(entity: 'T) =
-        collection.InsertOne(entity)
-
-    member this.update(id: BsonObjectId, entity: 'T) =
-        collection.ReplaceOne(equalIdFilter id, entity) |> ignore
-        collection.Find(equalIdFilter id).SingleOrDefault()
-
-    member this.delete(id: BsonObjectId) =
-        collection.DeleteOne(equalIdFilter id)
+    member this.    getByIdAsync(id: BsonObjectId) =
+        collection.Find(equalIdFilter id).SingleOrDefaultAsync()
         
-    member this.deleteAll() = async {
+    member this.getByEmailAsync(email: string) =
+        let filter = Builders<'T>.Filter.Eq("Email", email)
+        collection.Find(filter).SingleOrDefaultAsync()
+
+    member this.createAsync(entity: 'T) =
+        collection.InsertOneAsync(entity)
+
+    member this.updateAsync(id: BsonObjectId, entity: 'T) =
+        collection.ReplaceOne(equalIdFilter id, entity) |> ignore
+        collection.Find(equalIdFilter id).SingleOrDefaultAsync()
+
+    member this.deleteAsync(id: BsonObjectId) =
+        collection.DeleteOneAsync(equalIdFilter id)
+        
+    member this.deleteAllAsync() = async {
         let! deleteResult = collection.DeleteManyAsync(Builders<'T>.Filter.Empty) |> Async.AwaitTask
         return deleteResult
     }
